@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'requests.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"/>
+    <title>Messages</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100" style="background: #3A3E4B; color: white;">
+    <header>
+        <h1 class="d-none d-lg-block" 
+        style="text-align: center; color: #FF9138; margin-top: 5px; margin-bottom: -30px;">Social Network</h1>
+        <nav>
+            <div class="navbar navbar-expand-lg pt-4">
+                <div class="container-fluid">
+                    <a href="#" class="brand text-decoration-none d-block d-lg-none fw-bold fs-1">Social Network</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                        <ul id="nav-length" class="navbar-nav justify-content-between border-top border-2 text-center">
+                            <li class="nav-item">
+                                <a href="/" id="home" class="nav-link border-hover py-3 text-white"><i class="fa fa-home" aria-hidden="true"> Home</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" id="message" class="nav-link border-hover py-3 text-white"><i class="fa fa-envelope" aria-hidden="true"> Messages</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="people" id="search" class="nav-link border-hover py-3 text-white"><i class="fa fa-search" aria-hidden="true"> Search</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/profile/{{user}}" id="profile" class="nav-link border-hover py-3 text-white"><i class="fas fa-user"> Profile</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="upload" id="publish" class="nav-link border-hover py-3 text-white"><i class="fa fa-upload" aria-hidden="true"> Publish</i></a>
+                            </li>
+                            <li class="nav-item">
+                                {% if has_unreplied_request == False %}
+                                    <a href="requests" id="requests" class="nav-link border-hover py-3 text-white active"><i id="request_icon" class="fa fa-bell" aria-hidden="true"> Notifications</i></a>
+                                {% else %}
+                                    <a href="requests" id="requests" class="nav-link border-hover py-3 text-white active"><i id="request_icon" class="fa fa-bell" aria-hidden="true"> Notifications<span class="position-absolute top-0 start-95 translate-middle p-2 bg-danger border border-light rounded-circle"></span></i></a>
+                                {% endif %}
+                            </li>
+                            <li class="nav-item">
+                                <a href="/logout" id="sign-out" class="nav-link border-hover py-3 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"/></svg> Sign out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <hr style="color: white;">
+    <div class="container">
+        <h1 style="text-align: center;">Messages:</h1>
+        <ul class="list-unstyled mb-0">
+            {% for friend, message in friends_messages %}
+                <li class="p-2 border-bottom">
+                    {% if friend.user1.username > friend.user2.username %}
+                    <a href="chat/{{friend.user2.username}}-{{friend.user1.username}}" class="d-flex justify-content-between"
+                    style="text-decoration: none;" onclick="SendMessage(event)">
+                    {% else %}
+                    <a href="chat/{{friend.user1.username}}-{{friend.user2.username}}" class="d-flex justify-content-between"
+                    style="text-decoration: none;" onclick="SendMessage(event)">
+                    {% endif %}
+                        <div class="d-flex flex-row">
+                            <img src="{{friend.user2.profileinfo.profile_image}}" alt="avatar"
+                                class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                            <div class="pt-1">
+                                <p class="fw-bold mb-3" style="font-size: 20px; color: beige;">{{friend.user2.username}}</p>
+                                {% if message.sender == friend.user1 %}
+                                    <p class="small text-white">You: {{message.message}}</p>
+                                {% else %}
+                                    <p class="small text-white">{{message.message}}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if message != '' and message.timestamp > friend.last_message_date and message.sender != friend.user1 %}
+                            <div class="pt-1">
+                                <span class="badge bg-danger float-end">*</span>
+                            </div>
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <footer id="foot" class="bg-dark mt-auto" style="color: aliceblue; text-align: center;">
+        <div class="container" style="padding-top: 10px;">
+            <h2>Contact details! </h2>
+            <div class="row" style="padding: 15px;">
+                <section class="col">
+                    <div>
+                        <a href="https://github.com/region-09" class="icon-github" style="text-decoration: none;">
+                            <i class="fab fa-github"></i>
+                            Github
+                        </a>
+                    </div>
+                </section>
+                <section class="col">
+                    <div>
+                        <a href="mailto:almazruslanov0195@gmail.com" class="icon-email" style="text-decoration: none;">
+                            <i class="fab fa-google"></i>
+                            Gmail
+                        </a>
+                    </div>
+                </section>
+                <section class="col">
+                    <div>
+                        <a href="https://www.linkedin.com/in/almaz-ruslanov-b95336215" class="icon-linkedin" style="text-decoration: none;">
+                            <i class="fab fa-linkedin-in"></i>
+                            LinkedIn
+                        </a>
+                    </div>
+                </section>
+            </div>
+            <div id="lowest" style="text-align: center;">
+                <p>Feel free to contact me by any of the above options.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        // TODO find room and websocket for all of them!
+        function SendMessage(event) {
+            location.reload();
+        }
+        var names = "{{friend_names|safe}}";
+        const user = "{{user}}";
+        names = JSON.parse(names.replace(/'/g, '"'));
+        for (let i = 0; i < names.length; i++) {
+            let room = "";
+            if (names[i] > user) {
+                room = user + '-' + names[i];
+            }else {
+                room = names[i] + '-' + user;
+            }
+            // console.log(room);
+            const socket = new WebSocket('ws://'
+                + window.location.host
+                + '/ws/notification/'
+                + room + '/');
+            socket.onmessage = (e) => {
+                location.reload();
+            }
+            
+            socket.onclose = (e) => {
+                console.log("Socket closed!");
+            }
+        }
+        // socket2 for request notifications:
+        const socket2 = new WebSocket('ws://'
+                + window.location.host
+                + '/ws/notification/'
+                + "{{user.username}}" + '/');
+        socket2.onmessage = (e) => {
+            console.log('received(friend request)! notify user!');
+            document.getElementById('request_icon').innerHTML += '<span class="position-absolute top-0 start-95 translate-middle p-2 bg-danger border border-light rounded-circle">';
+        }
+        
+        socket2.onclose = (e) => {
+            console.log("Socket2 closed!");
+        }
+    </script>
+</body>
+
+</html>
+<!-- selenium, openai, asgiref,  -->

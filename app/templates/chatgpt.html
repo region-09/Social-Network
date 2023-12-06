@@ -1,0 +1,128 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Live Calculator</title>
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'requests.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body style="background: #3A3E4B; color: white;">
+    <header>
+        <h1 class="d-none d-lg-block" 
+        style="text-align: center; color: #FF9138; margin-bottom: -40px;">Social Network</h1>
+        <nav>
+            <div class="navbar navbar-expand-lg pt-4">
+                <div class="container-fluid">
+                    <a href="#" class="brand text-decoration-none d-block d-lg-none fw-bold fs-1" style="margin-top: -20px;">Social Network</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation" style="margin-top: -15px;">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                        <ul id="nav-length" class="navbar-nav justify-content-between border-top border-2 text-center">
+                            <li class="nav-item">
+                                <a href="/" id="home" class="nav-link border-hover py-3 text-white"><i class="fa fa-home" aria-hidden="true"> Home</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/chatting" id="message" class="nav-link border-hover py-3 text-white"><i class="fa fa-envelope" aria-hidden="true" 
+                                    id="message_icon"> Messages</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/people" id="search" class="nav-link border-hover py-3 text-white"><i class="fa fa-search" aria-hidden="true"> Search</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/upload" id="publish" class="nav-link border-hover py-3 text-white"><i class="fa fa-upload" aria-hidden="true"> Publish</i></a>
+                            </li>
+                            <li class="nav-item">
+                                {% if has_unreplied_request == False %}
+                                    <a href="/requests" id="requests" class="nav-link border-hover py-3 text-white active"><i id="request_icon" class="fa fa-user-plus" aria-hidden="true"> Requests</i></a>
+                                {% else %}
+                                <a href="/requests" id="requests" class="nav-link border-hover py-3 text-white active"><i id="request_icon" class="fa fa-user-plus" 
+                                    aria-hidden="true"> Requests<span class="position-absolute top-0 start-95 translate-middle p-2 bg-danger border border-light rounded-circle"></span></i></a>
+                                {% endif %}
+                            </li>
+                            <li class="nav-item">
+                                <a href="/logout" id="sign-out" class="nav-link border-hover py-3 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"/></svg> Sign out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <h2>Ask ChatGPT question:</h2>
+    {% csrf_token %}
+    <div class="card text-muted d-flex justify-content-start align-items-center p-3">
+        <input type="text" name="text_input" id="input" class="form-control" placeholder="Ask CHATGPT..."/>
+        <button class="btn btn-warning" type="submit" id="submit" style="padding-top: .55rem;" onclick="asked()">
+            Send
+        </button>
+    </div>
+    {% if answer %}
+        <h4>ChatGPT answer:</h4>
+        <div class="card">
+            <div class="card-content">
+                <p>{{answer}}</p>
+            </div>
+        </div>
+    {% endif %}
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script>
+		const user = "{{user}}";
+		// socket for request notifications:
+        const socket = new WebSocket('ws://'
+                + window.location.host
+                + '/ws/notification/'
+                + "{{user}}" + '/');
+        socket.onmessage = (e) => {
+            console.log('received(friend request)! notify user!');
+            document.getElementById('request_icon').innerHTML += '<span class="position-absolute top-0 start-95 translate-middle p-2 bg-danger border border-light rounded-circle">';
+        }
+        
+        socket.onclose = (e) => {
+            console.log("Socket2 closed!");
+        }
+        function asked() {
+            let question = document.querySelector("#input").value;
+            if ((question.trim()).length != 0) {
+                var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+                $.ajax({
+                    type: 'POST',
+                    url: "",  // Replace with your actual endpoint
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    data: {
+                        question: question.trim(),
+                    },
+                    success: function (data) {
+                        console.log('Success!', data);
+                        // Add logic to update UI if needed
+                        // For example, change the like button appearance or count
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        }
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
+<!-- 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 -->

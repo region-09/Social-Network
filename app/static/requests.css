@@ -1,0 +1,85 @@
+body {
+    background-color: #3A3E4B;
+}
+
+.brand {
+    color: #FF9138;
+}
+
+.border-hover {
+    border-top: 5px solid transparent;
+    transform: translateY(-4px);
+}
+
+.border-hover:hover {
+    border-top: 5px solid #ff9138;
+    transform: translateY(-8px);
+}
+
+#navbarSupportedContent {
+    margin-top: 10px;
+}
+
+a {
+    line-height: 10px;
+}
+
+#sign-in, #sign-out, #sign-up, #home, #publish, #message, #requests, #search, #profile {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#sign-in:hover, #sign-out:hover, #sign-up:hover, #home:hover, #publish:hover, #message:hover, #requests:hover, #search:hover, #profile:hover {
+    background: #FF9138;
+}
+
+.navbar-toggler {
+    border: 3px solid #FF9138;
+}
+
+
+.navbar-toggler-icon {
+    background-image: url(/static_files/svgs3/list.svg)
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+#nav-length {
+    width: 90%;
+}
+
+@media screen and (max-width : 992px) {
+    #nav-length {
+        width: 100%;
+    }
+
+    .border-hover {
+        border-top: 0;
+    }
+
+    .border-hover:hover {
+        border-top: 0;
+    }
+}
+
+/* body section */
+.icon-height {
+    height: 28px;
+    width: 28px;
+}
+
+
+.icon-container {
+    background: #FF9138;
+}
+
+.dark-background {
+    background: #2b3944;
+}
+#socialWrap {
+    border-radius: 0px 24px 24px 0px;
+}
