@@ -279,6 +279,9 @@
                 + window.location.host
                 + '/ws/notification/'
                 + room + '/');
+            socket.onopen = function (event) {
+                console.log('Opened socket1');
+            }
             socket.onmessage = (e) => {
                 console.log('received! notify user!');
                 document.getElementById('message_icon').innerHTML += '<span class="position-absolute top-0 start-95 translate-middle p-2 bg-danger border border-light rounded-circle">';
@@ -290,14 +293,17 @@
         }
         // socket2 for request notifications:
         const socket2 = new WebSocket('ws://'
-                + window.location.host
-                + '/ws/notification/'
-                + "{{user.username}}" + '/');
+        + window.location.host
+        + '/ws/notification/'
+        + "{{user.username}}" + '/');
+        console.log('WebSocket readyState:', socket2.readyState);
+        socket2.onopen = function (event) {
+            console.log('Opened');
+        }
         socket2.onmessage = (e) => {
             console.log('received(friend request)! notify user!');
             document.getElementById('request_icon').innerHTML += '<span class="position-absolute top-0 start-95 translate-middle p-2 bg-danger border border-light rounded-circle">';
         }
-        
         socket2.onclose = (e) => {
             console.log("Socket2 closed!");
         }

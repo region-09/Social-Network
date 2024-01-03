@@ -54,9 +54,13 @@
         </nav>
     </header>
     <section class="h-100 h-custom" style="background-color: #8fc4b7; margin-top: 100px;">
-        {% for message in messages %}
-            <h6 style="color: red; text-align: center;">{{message}}</h6>
-        {% endfor %}
+        {% if messages %}
+        <div style="margin-top: 100px; margin-bottom: -200px;">
+            {% for message in messages %}
+                <h6 style="color: red; text-align: center; font-size: 1.3em;">{{message}}</h6>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-lg-8 col-xl-6">

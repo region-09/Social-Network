@@ -12,7 +12,7 @@ from openai import OpenAI
 
 def logout(request):
     auth.logout(request)
-    return redirect('/')
+    return render(request, 'login.html', {})
 
 def index(request):
     if request.user.is_authenticated:
@@ -108,6 +108,9 @@ def register(request):
             found = True
         if len(surname) == 0:
             messages.info(request, 'Surname is empty!')
+            found = True
+        if len(username) == 0:
+            messages.info(request, 'Username is empty!')
             found = True
         if ' ' in username:
             messages.info(request, 'Username should not contain spaces!')
@@ -344,10 +347,12 @@ def profile(request, username):
                                 friend = 1
                             elif Friend.objects.filter(user1=request.user, user2=profile_user).exists() is False and Friend.objects.filter(user1=profile_user, user2=request.user).exists():
                                 friend = 2
+                            
+                            messages.info(request, 'Incorrect format! (png, jpeg, jpg only)')
                             return render(request, 'profile.html',
                         {'user': profile_user, 'current': current, 'friend': friend, 'current_user': current_user,
                             'friend_names': get_friend_names(request.user), 'has_unread_message': has_unread_message(request.user),
-                            'has_unreplied_request': has_unreplied_request(request.user),'messages': 'Incorrect format! (png, jpeg, jpg only)'})
+                            'has_unreplied_request': has_unreplied_request(request.user)})
                     profile_info.degree = degree
                     profile_user.email = email
                     profile_info.workplace = workplace

@@ -232,56 +232,63 @@ def login_func(driver, username, password):
 #         print(messages)
 #         self.assertIn('Incorrect format!', messages)
 
-# class SeleniumRequestsTestCase(unittest.TestCase):
-#     def setUp(self):
-#         self.driver = webdriver.Chrome()
-#         self.user1 = User.objects.get(username='tes1')
-#         self.user2 = User.objects.get(username='tes2')
-#         self.driver.get("http://localhost:8000/requests")
+class SeleniumRequestsTestCase(unittest.TestCase):
+    def setUp(self):
+        self.driver = webdriver.Chrome()
+        if User.objects.filter(username='tes1').exists() is False:
+            self.user1 = User.objects.create_user(username='tes1', password='correctone')
+        else:
+            self.user1 = User.objects.get(username='tes1')
+
+        if User.objects.filter(username='tes2').exists() is False:
+            self.user2 = User.objects.create_user(username='tes2', password='correctone')
+        else:
+            self.user2 = User.objects.get(username='tes2')
+        self.driver.get("http://localhost:8000/requests")
     
-#     def test_accept_request(self):
-#         Requests.objects.create(from_user=self.user1, to_user=self.user2)
-#         login_func(self.driver, 'tes2', 't')
-#         self.driver.get("http://localhost:8000/requests")
-#         WebDriverWait(self.driver, 5).until(
-#             EC.presence_of_element_located((By.ID, "tes1"))
-#         )
-#         button = self.driver.find_element(By.NAME, 'accept')
-#         button.click()
-#         self.driver.get("http://localhost:8000")
-#         self.assertFalse(Requests.objects.filter(from_user=self.user1, to_user=self.user2).exists())
+    def test_accept_request(self):
+        Requests.objects.create(from_user=self.user1, to_user=self.user2)
+        login_func(self.driver, 'tes2', 'correctone')
+        self.driver.get("http://localhost:8000/requests")
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.ID, "tes1"))
+        )
+        button = self.driver.find_element(By.NAME, 'accept')
+        button.click()
+        self.driver.get("http://localhost:8000")
+        self.assertFalse(Requests.objects.filter(from_user=self.user1, to_user=self.user2).exists())
 
 
-#     def test_remove_request(self):
-#         Requests.objects.create(from_user=self.user1, to_user=self.user2)
-#         self.driver.get("http://localhost:8000/")
-#         login_func(self.driver, 'tes2', 't')
-#         self.driver.get("http://localhost:8000/requests")
-#         WebDriverWait(self.driver, 5).until(
-#             EC.presence_of_element_located((By.ID, "tes1"))
-#         )
-#         button = self.driver.find_element(By.NAME, 'remove')
-#         button.click()
-#         self.driver.get("http://localhost:8000")
-#         self.assertFalse(Requests.objects.filter(from_user=self.user1, to_user=self.user2).exists())
+    def test_remove_request(self):
+        Requests.objects.create(from_user=self.user1, to_user=self.user2)
+        self.driver.get("http://localhost:8000/")
+        login_func(self.driver, 'tes2', 'correctone')
+        self.driver.get("http://localhost:8000/requests")
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.ID, "tes1"))
+        )
+        button = self.driver.find_element(By.NAME, 'remove')
+        button.click()
+        self.driver.get("http://localhost:8000")
+        self.assertFalse(Requests.objects.filter(from_user=self.user1, to_user=self.user2).exists())
 
-#     def test_empty_request(self):
-#         self.driver.get("http://localhost:8000/")
-#         login_func(self.driver, 'tes2', 't')
-#         self.driver.get("http://localhost:8000/requests")
-#         found = False
-#         try:
-#             WebDriverWait(self.driver, 5).until(
-#                 EC.presence_of_element_located((By.ID, "tes1"))
-#             )
-#             found = True
-#         except Exception:
-#             found = False
-#         self.driver.get("http://localhost:8000")
-#         self.assertFalse(found)
+    def test_empty_request(self):
+        self.driver.get("http://localhost:8000/")
+        login_func(self.driver, 'tes2', 'correctone')
+        self.driver.get("http://localhost:8000/requests")
+        found = False
+        try:
+            WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located((By.ID, "tes1"))
+            )
+            found = True
+        except Exception:
+            found = False
+        self.driver.get("http://localhost:8000")
+        self.assertFalse(found)
 
-#     def tearDown(self):
-#         self.driver.quit()
+    def tearDown(self):
+        self.driver.quit()
 
 # class SeleniumPeopleTestCase(TestCase):
 #     def setUp(self):

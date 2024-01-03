@@ -53,50 +53,52 @@
             </div>
         </nav>
     </header>
-    <section class="h-100 h-custom" style="background-color: #8fc4b7; margin-top: 100px;">
-        {% for message in messages %}
-            <h6 style="color: red; text-align: center;">{{message}}</h6>
-        {% endfor %}
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-lg-8 col-xl-6">
-                    <div class="card rounded-3">
-                        <div class="card-body p-4 p-md-5">
-                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Registration Info</h3>
-                            <p>Fields with * are must be filled!</p>
-                            <form class="px-md-2" action="" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="form-outline mb-4">
-                                    <input type="text" name="name" class="form-control" placeholder="Name*"/>
-          
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input type="text" name="surname" class="form-control" placeholder="Surname*"/>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input type="text" name="username" class="form-control" placeholder="Username*"/>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input type="text" name="email" class="form-control" placeholder="Email*"/>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input type="password" name="password" class="form-control" placeholder="Password*"/>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <input type="password" name="password2" class="form-control" placeholder="Retype password*"/>
-                                </div>
-                                <div class="form-outline mb-4">
-                                    <label for="">Profile Image:</label>
-                                    <input type="file" name="inputFile" class="form-control"/>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-lg mb-1">Submit</button>
-                            </form>
-                        </div>
+    {% if messages %}
+        <div style="margin-top: 200px; margin-bottom: -150px;">
+            {% for message in messages %}
+                <h6 style="color: red; text-align: center; font-size: 1.2em;">{{message}}</h6>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="container py-5 h-100" style="margin-top: 150px;">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card rounded-3">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Registration Info</h3>
+                        <p>Fields with * are must be filled!</p>
+                        <form class="px-md-2" action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-outline mb-4">
+                                <input type="text" name="name" class="form-control" placeholder="Name*"/>
+        
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" name="surname" class="form-control" placeholder="Surname*"/>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" name="username" class="form-control" placeholder="Username*"/>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="text" name="email" class="form-control" placeholder="Email*"/>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="password" name="password" class="form-control" placeholder="Password*"/>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <input type="password" name="password2" class="form-control" placeholder="Retype password*"/>
+                            </div>
+                            <div class="form-outline mb-4">
+                                <label for="">Profile Image:</label>
+                                <input type="file" name="inputFile" class="form-control"/>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg mb-1">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
     <footer id="foot" class="bg-dark mt-auto" style="color: aliceblue; text-align: center;">
         <div class="container" style="padding-top: 10px;">
             <h2>Contact details! </h2>
